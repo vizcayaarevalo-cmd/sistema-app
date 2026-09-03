@@ -1,7 +1,6 @@
 package com.ejemplo.backend;
 
 import org.springframework.web.bind.annotation.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -9,33 +8,25 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class TareaController {
 
-    private final List<String> tareas = new ArrayList<>();
+    private final TareaRepository repository;
 
-    public TareaController() {
-        tareas.add("Aprender integración Angular + Spring Boot");
-        tareas.add("Configurar puertos en Codespaces");
+    public TareaController(TareaRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping
-    public List<String> obtenerTareas() {
-        return tareas;
+    public List<Tarea> obtenerTareas() {
+        return repository.findAll();
     }
 
     @PostMapping
-    public List<String> agregarTarea(@RequestBody String nuevaTarea) {
-        if (nuevaTarea != null && !nuevaTarea.trim().isEmpty()) {
-            tareas.add(nuevaTarea.replace("\"", "")); // Limpia comillas extra si vienen del JSON
-        }
-        return tareas;
+    public Tarea agregarTarea(@RequestBody Tarea nuevaTarea) {
+        return repository.save(nuevaTarea);
     }
 
-    @DeleteMapping("/{index}")
-    public List<String> eliminarTarea(@PathVariable int index) {
-        if (index >= 0 && index < tareas.size()) {
-            tareas.remove(index);
-        }
-        return tareas;
+    @DeleteMapping("/{id}")
+    public void eliminarTarea(@PathVariable Long id) {
+        repository.deleteById(id);
     }
 }
-
 

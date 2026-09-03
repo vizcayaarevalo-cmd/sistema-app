@@ -1,5 +1,5 @@
 <div style="max-width: 500px; margin: 40px auto; font-family: sans-serif; text-align: center;">
-  <h2>Gestor de Tareas Dinámico 🚀</h2>
+  <h2>Gestor de Tareas Dinámico + Base de Datos H2 🗄️</h2>
 
   <div style="margin-bottom: 20px;">
     <input 
@@ -16,11 +16,11 @@
   </div>
 
   <ul style="list-style: none; padding: 0;">
-    @for (tarea of tareas(); track $index) {
+    @for (tarea of tareas(); track tarea.id) {
       <li style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
-        <span>{{ tarea }}</span>
+        <span>{{ tarea.titulo }}</span>
         <button 
-          (click)="eliminar($index)" 
+          (click)="eliminar(tarea.id)" 
           style="background-color: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer;">
           ✕
         </button>
@@ -28,6 +28,7 @@
     }
   </ul>
 </div>
+
 
 
 
