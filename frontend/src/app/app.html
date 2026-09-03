@@ -1,35 +1,91 @@
-<div style="max-width: 500px; margin: 40px auto; font-family: sans-serif; text-align: center;">
-  <h2>Gestor de Tareas Dinámico + Base de Datos H2 🗄️</h2>
+<div style="max-width: 520px; margin: 50px auto; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
 
-  <div style="margin-bottom: 20px;">
-    <input 
-      #inputTarea 
-      type="text" 
-      placeholder="Escribe una nueva tarea..." 
-      style="padding: 8px; width: 65%; margin-right: 8px;"
-    />
-    <button 
-      (click)="agregar(inputTarea.value); inputTarea.value = ''" 
-      style="padding: 8px 16px; background-color: #28a745; color: white; border: none; cursor: pointer;">
-      Agregar
-    </button>
-  </div>
+    @if (!isLoggedIn()) {
+      <!-- 1. PANTALLA DE LOGIN -->
+      <h2 style="margin-top: 0; color: #2c3e50; text-align: center; font-size: 24px;">
+        Iniciar Sesión 🔒
+      </h2>
+      <p style="text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px;">
+        Ingresa tus credenciales para acceder a la BD H2
+      </p>
 
-  <ul style="list-style: none; padding: 0;">
-    @for (tarea of tareas(); track tarea.id) {
-      <li style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
-        <span>{{ tarea.titulo }}</span>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <input 
+          type="text" 
+          [(ngModel)]="usernameInput" 
+          placeholder="Usuario (admin)" 
+          style="padding: 12px 15px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; outline: none;" 
+        />
+        <input 
+          type="password" 
+          [(ngModel)]="passwordInput" 
+          placeholder="Contraseña (1234)" 
+          (keyup.enter)="login()"
+          style="padding: 12px 15px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; outline: none;" 
+        />
         <button 
-          (click)="eliminar(tarea.id)" 
-          style="background-color: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer;">
-          ✕
+          (click)="login()" 
+          style="padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 5px;">
+          Ingresar
         </button>
-      </li>
+
+        @if (errorMessage()) {
+          <p style="color: #dc3545; font-size: 14px; text-align: center; margin: 5px 0 0 0;">
+            {{ errorMessage() }}
+          </p>
+        }
+      </div>
+
+    } @else {
+      <!-- 2. PANTALLA DE TAREAS (H2) -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2 style="margin: 0; color: #2c3e50; font-size: 22px;">Gestor de Tareas 🗄️</h2>
+          <span style="font-size: 12px; color: #28a745; font-weight: 600;">● Sesión activa</span>
+        </div>
+        <button 
+          (click)="logout()" 
+          style="background-color: #6c757d; color: white; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 13px; font-weight: 600;">
+          Cerrar Sesión
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+        <input 
+          #inputTarea 
+          type="text" 
+          placeholder="Escribe una nueva tarea..." 
+          (keyup.enter)="agregar(inputTarea.value); inputTarea.value = ''"
+          style="flex: 1; padding: 12px 15px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; outline: none;"
+        />
+        <button 
+          (click)="agregar(inputTarea.value); inputTarea.value = ''" 
+          style="padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px;">
+          + Agregar
+        </button>
+      </div>
+
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        @for (tarea of tareas(); track tarea.id) {
+          <li style="display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; margin-bottom: 8px; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #28a745;">
+            <span style="color: #333; font-size: 15px;">{{ tarea.titulo }}</span>
+            <button 
+              (click)="eliminar(tarea.id)" 
+              style="background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 12px;">
+              ✕
+            </button>
+          </li>
+        } @empty {
+          <li style="text-align: center; color: #a0aec0; padding: 20px 0;">
+            No hay tareas pendientes.
+          </li>
+        }
+      </ul>
     }
-  </ul>
+
+  </div>
 </div>
-
-
 
 
 
