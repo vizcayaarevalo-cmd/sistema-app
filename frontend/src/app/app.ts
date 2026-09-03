@@ -8,18 +8,24 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './app.css'
 })
 export class AppComponent implements OnInit {
-  mensajeBackend = signal<string>('Cargando datos del backend...');
+  mensajeBackend = signal<string>('Cargando mensaje...');
+  estadoBackend = signal<string>('Consultando estado...');
+  
   private http = inject(HttpClient);
 
   ngOnInit(): void {
-    const urlBackend = 'https://effective-bassoon-4jxw496rj4xxf7rq6-8080.app.github.dev/api/saludo';
+    const baseUrl = 'https://effective-bassoon-4jxw496rj4xxf7rq6-8080.app.github.dev/api';
 
-    this.http.get<{ mensaje: string }>(urlBackend).subscribe({
+    // Petición 1: Saludo
+    this.http.get<{ mensaje: string }>(`${baseUrl}/saludo`).subscribe({
       next: (data) => this.mensajeBackend.set(data.mensaje),
-      error: (err) => {
-        console.error('Error detallado:', err);
-        this.mensajeBackend.set('Error al conectar con Spring Boot');
-      }
+      error: () => this.mensajeBackend.set('Error en /saludo')
+    });
+
+    // Petición 2: Estado del servidor
+    this.http.get<{ estado: string; hora: string }>(`${baseUrl}/estado`).subscribe({
+      next: (data) => this.estadoBackend.set(`${data.estado} - Server Time: ${data.hora}`),
+      error: () => this.estadoBackend.set('Error en /estado')
     });
   }
 }
