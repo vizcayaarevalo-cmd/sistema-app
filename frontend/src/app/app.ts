@@ -8,27 +8,42 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './app.css'
 })
 export class AppComponent implements OnInit {
-  mensajeBackend = signal<string>('Cargando mensaje...');
-  estadoBackend = signal<string>('Consultando estado...');
+  tareas = signal<string[]>([]);
   
   private http = inject(HttpClient);
+  private baseUrl = 'https://effective-bassoon-4jxw496rj4xxf7rq6-8080.app.github.dev/api/tareas';
 
   ngOnInit(): void {
-    const baseUrl = 'https://effective-bassoon-4jxw496rj4xxf7rq6-8080.app.github.dev/api';
+    this.cargarTareas();
+  }
 
-    // Petición 1: Saludo
-    this.http.get<{ mensaje: string }>(`${baseUrl}/saludo`).subscribe({
-      next: (data) => this.mensajeBackend.set(data.mensaje),
-      error: () => this.mensajeBackend.set('Error en /saludo')
+  cargarTareas(): void {
+    this.http.get<string[]>(this.baseUrl).subscribe({
+      next: (data) => this.tareas.set(data),
+      error: (err) => console.error('Error al cargar tareas', err)
     });
+  }
 
-    // Petición 2: Estado del servidor
-    this.http.get<{ estado: string; hora: string }>(`${baseUrl}/estado`).subscribe({
-      next: (data) => this.estadoBackend.set(`${data.estado} - Server Time: ${data.hora}`),
-      error: () => this.estadoBackend.set('Error en /estado')
+  agregar(nuevaTarea: string): void {
+    if (!nuevaTarea.trim()) return;
+    
+    this.http.post<string[]>(this.baseUrl, nuevaTarea, {
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe({
+      next: (data) => this.tareas.set(data),
+      error: (err) => console.error('Error al agregar tarea', err)
+    });
+  }
+
+  eliminar(index: number): void {
+    this.http.delete<string[]>(`${this.baseUrl}/${index}`).subscribe({
+      next: (data) => this.tareas.set(data),
+      error: (err) => console.error('Error al eliminar tarea', err)
     });
   }
 }
+
+
 
 
 

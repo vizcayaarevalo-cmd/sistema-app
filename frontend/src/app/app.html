@@ -1,16 +1,36 @@
-<div style="text-align: center; margin-top: 50px; font-family: sans-serif;">
-  <h1>Integración Angular + Spring Boot</h1>
-  
-  <!-- Mensaje 1 -->
-  <p style="font-size: 1.5rem; color: #2e7d32; font-weight: bold;">
-    {{ mensajeBackend() }}
-  </p>
+<div style="max-width: 500px; margin: 40px auto; font-family: sans-serif; text-align: center;">
+  <h2>Gestor de Tareas Dinámico 🚀</h2>
 
-  <!-- Mensaje 2 (Nuevo) -->
-  <p style="font-size: 1.1rem; color: #1565c0; background-color: #e3f2fd; padding: 10px; display: inline-block; border-radius: 8px;">
-    {{ estadoBackend() }}
-  </p>
+  <div style="margin-bottom: 20px;">
+    <input 
+      #inputTarea 
+      type="text" 
+      placeholder="Escribe una nueva tarea..." 
+      style="padding: 8px; width: 65%; margin-right: 8px;"
+    />
+    <button 
+      (click)="agregar(inputTarea.value); inputTarea.value = ''" 
+      style="padding: 8px 16px; background-color: #28a745; color: white; border: none; cursor: pointer;">
+      Agregar
+    </button>
+  </div>
+
+  <ul style="list-style: none; padding: 0;">
+    @for (tarea of tareas(); track $index) {
+      <li style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #ddd;">
+        <span>{{ tarea }}</span>
+        <button 
+          (click)="eliminar($index)" 
+          style="background-color: #dc3545; color: white; border: none; padding: 4px 8px; cursor: pointer;">
+          ✕
+        </button>
+      </li>
+    }
+  </ul>
 </div>
+
+
+
 
 
 
